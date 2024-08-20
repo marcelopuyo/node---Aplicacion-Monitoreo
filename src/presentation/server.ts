@@ -9,8 +9,8 @@ export class Server {
   public static start() {
     console.log('Server corriendo');
 
-    //const url: string = 'https://google.com';
-    const url: string = 'http://localhost:3000';
+    const url: string = 'https://google.com';
+    //const url: string = 'http://localhost:3000';
 
     CronService.createJob(
       '*/3 * * * * *',

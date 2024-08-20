@@ -11,8 +11,8 @@ type ErrorCallback = ((error: string) => void) | undefined;
 export class CheckService implements ICheckServiceUseCase {
   constructor(
     private readonly logRepository: LogRepository,
-    private readonly successCallback: SuccessCallback,
-    private readonly errorCallback: ErrorCallback
+    private readonly successCallback?: SuccessCallback,
+    private readonly errorCallback?: ErrorCallback
   ) {};
 
   async execute(url: string): Promise<boolean> {
