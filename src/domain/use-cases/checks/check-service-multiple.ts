@@ -5,19 +5,26 @@ import {
 } from '../../entities/log.entity';
 import { LogRepository } from '../../repositories/log.repository';
 
-interface ICheckServiceUseCase {
+interface ICheckServiceMultipleUseCase {
   execute(url: string): Promise<boolean>;
 }
 
 type SuccessCallback = (() => void) | undefined;
 type ErrorCallback = ((error: string) => void) | undefined;
 
-export class CheckService implements ICheckServiceUseCase {
+export class CheckServiceMultiple implements ICheckServiceMultipleUseCase {
+
   constructor(
-    private readonly logRepository: LogRepository,
+    private readonly logRepository: LogRepository[],
     private readonly successCallback?: SuccessCallback,
     private readonly errorCallback?: ErrorCallback
   ) {}
+  
+  private callRepositorySaveLog(log: LogEntity) {
+    this.logRepository.forEach(repository => {
+      repository.saveLog(log);
+    });
+  };
 
   async execute(url: string): Promise<boolean> {
     try {
@@ -33,7 +40,7 @@ export class CheckService implements ICheckServiceUseCase {
         };
 
         const log = new LogEntity(logOptions);
-        this.logRepository.saveLog(log);
+        this.callRepositorySaveLog(log);
         this.successCallback && this.successCallback();
         return true;
       }
@@ -47,7 +54,7 @@ export class CheckService implements ICheckServiceUseCase {
       };
 
       const log = new LogEntity(logOptions);
-      this.logRepository.saveLog(log);
+      this.callRepositorySaveLog(log);
       this.errorCallback && this.errorCallback(errorMessage);
       return false;
     }
